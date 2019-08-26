@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import io.flutter.plugin.common.MethodCall;
@@ -92,33 +91,6 @@ public class DrifterPlugin implements MethodCallHandler {
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     switch (call.method) {
-        // todo shouldShowRequestPermissionRationale
-      case "requestPermissions":
-        try {
-          List<String> permissions = call.argument("permissions");
-          int requestCode = ThreadLocalRandom.current().nextInt();
-          registrar.activity().requestPermissions(permissions.toArray(new String[0]), requestCode);
-          requests.add(requestCode);
-          result.success(requestCode);
-
-          if (debug) {
-            log.fine("requestPermissions " + requestCode + " - " + permissions);
-          }
-        } catch (Throwable e) {
-          handleException(result, e);
-        }
-        break;
-      case "hasPermission":
-        if (call.argument("permission") instanceof String) {
-          String permission = call.argument("permission");
-          result.success(
-              context.checkCallingOrSelfPermission(permission)
-                  == PackageManager.PERMISSION_GRANTED);
-          ActivityCompat.requestPermissions(registrar.activity(), new String[] {permission}, 0);
-        } else {
-          result.success(false);
-        }
-        break;
       case "debug":
         result.success(debug);
         if (call.argument("debug") != null) {
